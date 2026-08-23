@@ -4,14 +4,22 @@ from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
 from peft import LoraConfig, get_peft_model, prepare_model_for_kbit_training
 from trl import SFTTrainer
 from datasets import load_dataset
+from pathlib import Path
 
 def run_training():
+    import os
     # 1. Managment relative rutes
     # Set automatic detection where script is, to avoid absoluted broke rutes
-    print(f" ... starting process...")
-    base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    data_path = os.path.join(base_dir, "data", "dataset_fraude.jsonl")
-    output_dir = os.path.join(base_dir, "modelo_fintech_final")
+    print(f" ... starting process...")   
+    base_dir = Path.cwd()
+    data_path = base_dir / "data" / "dataset_fraude.jsonl"
+    output_dir = base_dir / "modelo_fintech_final"
+
+    #base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    # En Colab, tu ruta raíz suele ser el directorio del repositorio clonado
+    #base_dir = "/content/fintech-fraud-classifier-qlora" 
+    #data_path = os.path.join(base_dir, "data", "dataset_fraude.jsonl")
+    #output_dir = os.path.join(base_dir, "modelo_fintech_final")
 
     print(f" * Cargando dataset desde: {data_path}")
     if not os.path.exists(data_path):
