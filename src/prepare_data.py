@@ -6,7 +6,7 @@ def build_enterprise_dataset():
     base_dir= os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     # /data exist
     os.makedirs(os.path.join(base_dir,"data"), exist_ok=True)
-    output_path = os.path.join(base_dir,"data","dataset_fraud.jsonl")
+    output_path = os.path.join(base_dir,"data","dataset_fraude.jsonl")
 
     print(" ** Descargando dataset bancario desde Hugging Face (Bitext)...")
     # We load a realistic dataset of banking and customer support intents.
