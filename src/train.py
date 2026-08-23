@@ -30,15 +30,26 @@ def run_training():
 
     # 3. Load Model and Tokenizer
     # It uses a ope-source model base on lead industry
-    model_id = "meta-llama/Llama-3-8B-Instruct"
+    model_id = "meta-llama/Meta-Llama-3-8B-Instruct"
     print(f" ** Descargando/Cargando modelo base: {model_id}...")
 
-    tokenizer = AutoTokenizer.from_pretrained(model_id)
+    # token from HugginFace acces read only
+    #hf_token = "HF_TOKEN"
+    try:
+        from google.colab import userdata
+        hf_token = userdata.get("HF_TOKEN")
+    except ImportError:
+        # excecution out from Colab
+        import os
+        hf_token = os.environ.get("HF_TOKEN")
+
+    tokenizer = AutoTokenizer.from_pretrained(model_id, token=hf_token)
     tokenizer.pad_token = tokenizer.eos_token
     tokenizer.padding_side = "right"            # avoid atention problems during training model motived for padding left
 
     model = AutoModelForCausalLM.from_pretrained(
         model_id,
+        token=hf_token,
         quantization_config=bnb_config,
         device_map="auto"                       # Distributes the layers automatically across the available GPU.    
     )
