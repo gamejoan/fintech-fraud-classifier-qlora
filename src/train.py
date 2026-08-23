@@ -30,11 +30,11 @@ def run_training():
 
     # 3. Load Model and Tokenizer
     # It uses a ope-source model base on lead industry
-    model_id = "meta-llama/Meta-Llama-3-8B-Instruct"
+    model_id = "meta-llama/Meta-Llama-3-8B-Instruct" 
     print(f" ** Descargando/Cargando modelo base: {model_id}...")
 
     # token from HugginFace acces read only
-    #hf_token = "HF_TOKEN"
+    #hf_token = "HF_TOKEN "
     try:
         from google.colab import userdata
         hf_token = userdata.get("HF_TOKEN")
