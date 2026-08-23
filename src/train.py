@@ -78,8 +78,8 @@ def run_training():
     model = get_peft_model(model, peft_config)
     model.print_trainable_parameters()  # it show on cmd real percentage on training process (-1%)
 
-    # 5. Load local DataSet
-    dataset = load_dataset("json", data_files=data_path)
+    # 5. Load local DataSet 
+    dataset = load_dataset("json", data_files=str(data_path))
 
     # 6. Training HiperParameters (aligned industry standars)
     print(" ** Configurando hiperparametros de entrenamiento ....")
