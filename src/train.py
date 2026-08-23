@@ -1,5 +1,6 @@
 import os
 import torch
+import gc
 from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig, TrainingArguments
 from peft import LoraConfig, get_peft_model, prepare_model_for_kbit_training
 from trl import SFTTrainer
@@ -7,7 +8,9 @@ from datasets import load_dataset
 from pathlib import Path
 
 def run_training():
-    import os
+    import os    
+    #  PYTORCH_CUDA_ALLOC_CONF this prevents PyTorch memory from becoming fragmented into unusable blocks 
+    os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
     # 1. Managment relative rutes
     # Set automatic detection where script is, to avoid absoluted broke rutes
     print(f" ... starting process...")   
@@ -66,6 +69,9 @@ def run_training():
     # We freeze 99% of the model and prepare the layers to receive the low-degradation adapters.
 
     print(" ** Aplicamos adaptadores LoRA (Low-Rank Adaptation)...")
+    # there is clean cache before model
+    gc.collect()
+    torch.cuda.empty_cache()
     model = prepare_model_for_kbit_training(model)
     peft_config = LoraConfig(
         r=16,                  # Matrix range. 16 offers an excellent balance between precision and speed.
@@ -79,6 +85,7 @@ def run_training():
     model.print_trainable_parameters()  # it show on cmd real percentage on training process (-1%)
 
     # 5. Load local DataSet 
+    # data_path must be passed on str path in order to iterate data_path files
     dataset = load_dataset("json", data_files=str(data_path))
 
     # 6. Training HiperParameters (aligned industry standars)
@@ -87,6 +94,7 @@ def run_training():
         output_dir = os.path.join(base_dir, "checkpints"),
         per_device_train_batch_size=2,
         gradient_accumulation_steps=4,
+        gradient_checkpointing=True,
         learning_rate=2e-4,
         logging_steps=10,
         max_steps=100,
