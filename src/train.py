@@ -67,9 +67,9 @@ def run_training():
 
     # 4. Already set Model to PEFT\LoRA
     # We freeze 99% of the model and prepare the layers to receive the low-degradation adapters.
-
     print(" ** Aplicamos adaptadores LoRA (Low-Rank Adaptation)...")
-    # there is clean cache before model
+    # there is clean cache before model 
+    print(" ...there is clean cache before model works...")
     gc.collect()
     torch.cuda.empty_cache()
     model = prepare_model_for_kbit_training(model)
