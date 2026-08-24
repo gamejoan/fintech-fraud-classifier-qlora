@@ -34,9 +34,10 @@ def run_training():
     print(" * Configurando cuantizacion de 4 bits (NF4)...")
     bnb_config = BitsAndBytesConfig(
         load_in_4bit=True,
-        bnb_4bit_quant_type="nf4",
-        bnb_4bit_compute_dtype=torch.bfloat16, # bfloat16 avoids mathematical degradation on modern GPUs
-        bnb_4bit_use_double_quant=True         # Quantizes the quantization constants to save an additional 0.4 bits per parameter
+        bnb_4bit_quant_type="nf4",             # float16 if GPU is old like 4T  
+        bnb_4bit_compute_dtype=torch.float16,  # bfloat16 avoids mathematical degradation on modern GPUs                                               
+        bnb_4bit_use_double_quant=True,         # Quantizes the quantization constants to save an additional 0.4 bits per parameter
+        llm_int8_enable_fp32_cpu_offload=True
     )
 
     # 3. Load Model and Tokenizer
@@ -53,7 +54,10 @@ def run_training():
         # excecution out from Colab
         import os
         hf_token = os.environ.get("HF_TOKEN")
-
+    
+    print(" ...1-there is clean cache before model works...")
+    gc.collect()
+    torch.cuda.empty_cache()          # there is clean cache before model  
     tokenizer = AutoTokenizer.from_pretrained(model_id, token=hf_token)
     tokenizer.pad_token = tokenizer.eos_token
     tokenizer.padding_side = "right"            # avoid atention problems during training model motived for padding left
@@ -69,7 +73,7 @@ def run_training():
     # We freeze 99% of the model and prepare the layers to receive the low-degradation adapters.
     print(" ** Aplicamos adaptadores LoRA (Low-Rank Adaptation)...")
     # there is clean cache before model 
-    print(" ...there is clean cache before model works...")
+    print(" ...2-there is clean cache before model works...")
     gc.collect()
     torch.cuda.empty_cache()
     model = prepare_model_for_kbit_training(model)
