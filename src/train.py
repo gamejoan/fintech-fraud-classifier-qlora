@@ -104,7 +104,7 @@ def run_training():
         max_steps=100,
         bf16=True if torch.cuda.is_bf16_supported() else False,
         fp16=False if torch.cuda.is_bf16_supported() else True,
-        optim="paged_adamw_8bits",
+        optim="paged_adamw_8bit",
         save_strategy="no",
         report_to="none"
     ) 
