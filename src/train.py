@@ -106,7 +106,9 @@ def run_training():
         fp16=False if torch.cuda.is_bf16_supported() else True,
         optim="paged_adamw_8bit",
         save_strategy="no",
-        report_to="none"
+        report_to="none",
+        dataset_text_field="messages"
+        max_seq_length=512
     ) 
 
     # 7. Start Training ...
@@ -114,8 +116,8 @@ def run_training():
         model=model,
         train_dataset=dataset["train"],
         peft_config=peft_config,
-        dataset_text_field="messages",      # Specifies that the structured message list format (ChatML) will be used.
-        max_seq_length=512,                 # Truncates long texts to protect video memory.
+        #dataset_text_field="messages",      # Specifies that the structured message list format (ChatML) will be used.
+        #max_seq_length=512,                 # Truncates long texts to protect video memory.
         tokenizer=tokenizer,
         args=training_args
     )
