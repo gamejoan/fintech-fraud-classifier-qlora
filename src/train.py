@@ -3,7 +3,7 @@ import torch
 import gc
 from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig, TrainingArguments
 from peft import LoraConfig, get_peft_model, prepare_model_for_kbit_training
-from trl import SFTTrainer
+from trl import SFTTrainer, SFTConfig
 from datasets import load_dataset
 from pathlib import Path
 
@@ -19,7 +19,7 @@ def run_training():
     output_dir = base_dir / "modelo_fintech_final"
 
     #base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    # En Colab, tu ruta raíz suele ser el directorio del repositorio clonado
+    # En Colab, tu ruta raiz es el directorio del repositorio clonado
     #base_dir = "/content/fintech-fraud-classifier-qlora" 
     #data_path = os.path.join(base_dir, "data", "dataset_fraude.jsonl")
     #output_dir = os.path.join(base_dir, "modelo_fintech_final")
@@ -57,7 +57,8 @@ def run_training():
     
     print(" ...1-there is clean cache before model works...")
     gc.collect()
-    torch.cuda.empty_cache()          # there is clean cache before model  
+    torch.cuda.empty_cache()          # there is clean cache before model 
+
     tokenizer = AutoTokenizer.from_pretrained(model_id, token=hf_token)
     tokenizer.pad_token = tokenizer.eos_token
     tokenizer.padding_side = "right"            # avoid atention problems during training model motived for padding left
@@ -94,7 +95,7 @@ def run_training():
 
     # 6. Training HiperParameters (aligned industry standars)
     print(" ** Configurando hiperparametros de entrenamiento ....")
-    training_args = TrainingArguments(
+    training_args = SFTConfig(   #TrainingArguments(
         output_dir = os.path.join(base_dir, "checkpoints"),
         per_device_train_batch_size=2,
         gradient_accumulation_steps=4,
@@ -112,6 +113,7 @@ def run_training():
     ) 
 
     # 7. Start Training ...
+    print("...starting Training...")
     trainer = SFTTrainer(
         model=model,
         train_dataset=dataset["train"],
