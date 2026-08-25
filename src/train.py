@@ -95,7 +95,7 @@ def run_training():
     # 6. Training HiperParameters (aligned industry standars)
     print(" ** Configurando hiperparametros de entrenamiento ....")
     training_args = TrainingArguments(
-        output_dir = os.path.join(base_dir, "checkpints"),
+        output_dir = os.path.join(base_dir, "checkpoints"),
         per_device_train_batch_size=2,
         gradient_accumulation_steps=4,
         gradient_checkpointing=True,
