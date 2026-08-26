@@ -108,8 +108,8 @@ def run_training():
         optim="paged_adamw_8bit",
         save_strategy="no",
         report_to="none",
-        dataset_text_field="messages",
-        max_seq_length=512
+        max_seq_len=512,
+        dataset_text_field="messages"        
     ) 
 
     # 7. Start Training ...
