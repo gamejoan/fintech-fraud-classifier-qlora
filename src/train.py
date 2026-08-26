@@ -108,8 +108,9 @@ def run_training():
         optim="paged_adamw_8bit",
         save_strategy="no",
         report_to="none",
-        max_seq_len=512,
-        dataset_text_field="messages"        
+        max_length=512,
+        dataset_text_field="messages",        
+        processing_class=tokenizer
     ) 
 
     # 7. Start Training ...
@@ -120,7 +121,7 @@ def run_training():
         peft_config=peft_config,
         #dataset_text_field="messages",      # Specifies that the structured message list format (ChatML) will be used.
         #max_seq_length=512,                 # Truncates long texts to protect video memory.
-        tokenizer=tokenizer,
+        #tokenizer=tokenizer,                # El SFTConfig ya lleva el tokenizador adentro
         args=training_args
     )
 
