@@ -13,7 +13,7 @@ def run_training():
     os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
     # 1. Managment relative rutes
     # Set automatic detection where script is, to avoid absoluted broke rutes
-    print(f" ... starting process...")   
+    print(f" ... starting process ...")   
     base_dir = Path.cwd()
     data_path = base_dir / "data" / "dataset_fraude.jsonl"
     output_dir = base_dir / "modelo_fintech_final"
@@ -98,22 +98,24 @@ def run_training():
     training_args = SFTConfig(   #TrainingArguments(
         output_dir = os.path.join(base_dir, "checkpoints"),
         per_device_train_batch_size=2,
-        gradient_accumulation_steps=4,
-        gradient_checkpointing=True,
+        gradient_accumulation_steps=4,        
+        optim="paged_adamw_8bit",        
         learning_rate=2e-4,
-        logging_steps=10,
-        max_steps=100,
+        lr_scheduler_type="cosine",
+        logging_steps=10,                
         bf16=True if torch.cuda.is_bf16_supported() else False,
-        fp16=False if torch.cuda.is_bf16_supported() else True,
-        optim="paged_adamw_8bit",
-        save_strategy="no",
-        report_to="none",
-        max_length=512,
+        fp16=False if torch.cuda.is_bf16_supported() else True,                
+        save_strategy="steps",
+        save_steps=100,
+        fp16=True,
+        gradient_checkpointing=True,
+        report_to="none",        
         dataset_text_field="messages",        
+        max_seq_length=512,
         processing_class=tokenizer
     ) 
 
-    # 7. Start Training ...
+    # 7. Start Training ....
     print("...starting Training...")
     trainer = SFTTrainer(
         model=model,
