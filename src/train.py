@@ -111,7 +111,7 @@ def run_training():
         report_to="none",        
         dataset_text_field="messages",        
         max_length=512,
-        processing_class=tokenizer
+        #processing_class=tokenizer
     ) 
 
     # 7. Start Training ....
@@ -123,6 +123,7 @@ def run_training():
         #dataset_text_field="messages",      # Specifies that the structured message list format (ChatML) will be used.
         #max_seq_length=512,                 # Truncates long texts to protect video memory.
         #tokenizer=tokenizer,                # El SFTConfig ya lleva el tokenizador adentro
+        processing_class=tokenizer,
         args=training_args
     )
 
