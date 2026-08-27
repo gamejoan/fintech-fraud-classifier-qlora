@@ -119,7 +119,7 @@ def run_training():
     trainer = SFTTrainer(
         model=model,
         train_dataset=dataset["train"],
-        peft_config=peft_config,
+        #peft_config=peft_config,
         #dataset_text_field="messages",      # Specifies that the structured message list format (ChatML) will be used.
         #max_seq_length=512,                 # Truncates long texts to protect video memory.
         #tokenizer=tokenizer,                # El SFTConfig ya lleva el tokenizador adentro
