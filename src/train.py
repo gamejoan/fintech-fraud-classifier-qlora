@@ -110,7 +110,7 @@ def run_training():
         gradient_checkpointing=True,
         report_to="none",        
         dataset_text_field="messages",        
-        max_seq_length=512,
+        max_length=512,
         processing_class=tokenizer
     ) 
 
