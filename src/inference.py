@@ -7,7 +7,7 @@ from pathlib import Path
 
 def test_inference():
     import os
-    # PYTHON_CUDA_ALLOC_CONF this prevent PyTorch memory from becoming fragmented into unsuable blocks
+    # PYTORCH_CUDA_ALLOC_CONF this prevent PyTorch memory from becoming  --fragmented into unsuable blocks
     os.environ["PYTORCH_CUDA_ALLOC_CONF"]= "expandable_segments:True"
 
     # 1. Managment relative rutes
