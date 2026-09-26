@@ -8,7 +8,7 @@ from pathlib import Path
 def test_inference():
     import os
     # PYTHON_CUDA_ALLOC_CONF this prevent PyTorch memory from becoming fragmented into unsuable blocks
-    os.environ["PYTHON_CUDA_ALLOC_CONF"]= "expandable_segments:True"
+    os.environ["PYTORCH_CUDA_ALLOC_CONF"]= "expandable_segments:True"
 
     # 1. Managment relative rutes
     # Set automatic detection where script is, to avoid absoluted broke rutes    
