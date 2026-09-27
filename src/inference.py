@@ -1,12 +1,13 @@
 import os
+import gc
 import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
 from peft import PeftModel
 from pathlib import Path
 
-
+#def test_inference(input_prompt: str):
 def test_inference():
-    import os
+    #import os
     # PYTORCH_CUDA_ALLOC_CONF this prevent PyTorch memory from becoming  --fragmented into unsuable blocks
     os.environ["PYTORCH_CUDA_ALLOC_CONF"]= "expandable_segments:True"
 
@@ -40,6 +41,7 @@ def test_inference():
 
     # token from HugginFace acces read olny
     #hf_token = "HF_TOKEN"
+    hf_token = None     # Initialize to avoid UnboundLocalError
     try:
         from google.colab import userdata
         hf_token = userdata.get("HF_TOKEN")
@@ -50,7 +52,7 @@ def test_inference():
     
     print(" .... 1.-there is clenan cache before model works....")
     gc.collect()
-    tourch.cuda.empty_cache()                 # there is clean cache before model
+    torch.cuda.empty_cache()                 # there is clean cache before model
     
     tokenizer = AutoTokenizer.from_pretrained(model_id, token=hf_token)
     tokenizer.pad_token = tokenizer.eos_token
@@ -72,6 +74,7 @@ def test_inference():
 
     # Simulacion de un correo de un cliente real
     print("... simulating customer email... : ")
+    #prompt_usuario = input_prompt
     prompt_usuario = "Hola, me urge ayuda. Veo una transferencia que yo no autorice a una cuenta desconocida por $2,000 dolares realizada hace una hora."
     print(f" ... prompt_usuario {prompt_usuario}")
 
@@ -86,9 +89,8 @@ def test_inference():
     
     print(" ** Generando respuesta estructurada...")
     with torch.no_grad():
-        outputs = model.generate(inputs, max_new_tokens=100, temperature=0.1, do_sample=False)
-    
-    respuesta = tokenizer.decode(outputs[0][inputs.shape[1]:], skip_special_tokens=True)
+        outputs = model.generate(**inputs, max_new_tokens=100, temperature=0.1, do_sample=False) 
+    respuesta = tokenizer.decode(outputs[0][inputs['input_ids'].shape[1]:], skip_special_tokens=True)
     print("\n ** RESULTADO DEL LLM EN PRODUCCIÓN:...")
     print(respuesta)
 
