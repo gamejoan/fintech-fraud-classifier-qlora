@@ -84,14 +84,16 @@ def test_inference():
         {"role": "system", "content": "Analiza el mensaje y responde SOLO con un JSON: {'categoria': 'fraude'|'soporte'|'aclaracion', 'riesgo': 'alto'|'medio'|'bajo'}"},
         {"role": "user", "content": prompt_usuario}
     ]
-    
+
+    # Preparar los tokens para la GPU
+    print("...preparing tokens to GPU...")    
     inputs = tokenizer.apply_chat_template(messages, add_generation_prompt=True, return_tensors="pt").to("cuda")
     
     print(" ** Generando respuesta estructurada...")
     with torch.no_grad():
         outputs = model.generate(**inputs, max_new_tokens=100, temperature=0.1, do_sample=False) 
     respuesta = tokenizer.decode(outputs[0][inputs['input_ids'].shape[1]:], skip_special_tokens=True)
-    print("\n ** RESULTADO DEL LLM EN PRODUCCIÓN:...")
+    print("\n ** RESULTADO DEL LLM EN PRODUCCIÓN : ...")
     print(respuesta)
 
 if __name__ == "__main__":
